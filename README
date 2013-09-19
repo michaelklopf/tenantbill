@@ -1,0 +1,5 @@
+---Tenant Bill---
+
+This is only a small node.js project, to apply what I learned from the StartUp Engineering course.
+
+The idea is to compute additional payments or the amount of credit to a tenant when the difference between prepayments and actual cost is non-zero.
