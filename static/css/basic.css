@@ -1,6 +1,12 @@
 /* My own CSS */
 #sendbutton {
-        
+    width:80px;
+    padding-top:10px;
+}
+
+#dp1, #dp2 {
+    padding-top:5px;
+    padding-bottom:5px;
 }
 
 /* Footer example CSS following here */
