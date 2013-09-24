@@ -39,14 +39,32 @@
           <div class="page-header">
             <h1>Welcome to the tenant bill site.</h1>
           </div>
-          <p class="lead">Enter your information here:</p>
+          <p class="lead">Give your information here:</p>
           <p>
-            <div id="inputarea">
-              <strong>Enter start date:</strong><br>
-              <input type="text" id="dp1" placeholder="01.01.1970"></input>
-              <br>
-              <strong>Enter end date:</strong><br>
-              <input type="text" id="dp2" placeholder="01.01.1970"></input>
+            <div id="inputarea" class="row">
+              <div class="col-md-4">
+                <strong>Enter start date:</strong>
+                <br>
+                <input type="text" id="dp1" placeholder="15.08.2012"></input>
+                <br>
+                <strong>Enter end date:</strong>
+                <br>
+                <input type="text" id="dp2" placeholder="31.12.2012"></input>
+              </div>
+              <div class="col-md-4">
+                <strong>Enter total cost:</strong>
+                <br>
+                <input type="number" id="totalCost" placeholder="1700" min="0"></input>&nbsp;in &euro;
+                <br>
+                <strong>Enter amount of pre-payments:</strong>
+                <br>
+                <input type="number" id="prePay" placeholder="1500" min="0"></input>&nbsp;in &euro;
+              </div>
+              <div class="col-md-4">
+                <strong>Costs that cannot be handed down to tenant:</strong>
+                <br>
+                <input type="number" id="noCost" placeholder="50" min="0"></input>&nbsp;in &euro;
+              </div>  
             </div>
             <div id="sendbutton"><button class="btn btn-lg btn-primary btn-block" type="submit">Engage</button></div>
           </p>
