@@ -7,6 +7,19 @@
 #dp1, #dp2 {
     /*padding-top:5px;
     padding-bottom:5px;*/
+    border:1px solid black;
+}
+
+.warning {
+    width:300px;
+    color: #FF0000;
+    margin-top:20px;
+    margin-bottom:20px;
+    margin-left:auto;
+    margin-right:auto;
+    border:2px solid red;
+    padding:5px;
+    text-align:center;
 }
 
 /* Footer example CSS following here */

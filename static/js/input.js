@@ -42,8 +42,8 @@ $(document).ready(function() {
     
     var turnFieldsToNormal = function() {
         $('#contentarea').text('');
-        $('#dp1').css('color', 'black');
-        $('#dp2').css('color', 'black');
+        removeHighlight('#dp1');
+        removeHighlight('#dp2');
     }
     
     var isDateOk = function(date) {
@@ -98,16 +98,26 @@ $(document).ready(function() {
     
     var alertMessage = function(startDate, endDate) {
         if (endDate === '') {
-            //$(startDate).css('color', 'red');
-            $('#contentarea').append('<br>Please check your start date again.');
+            $('#contentarea').append('<div class="warning">Please check your start date again.</div>');
+            setHighlight('#dp1');
         } else if (startDate === '') {
-            //$(endDate).css('color', 'red');
-            $('#contentarea').append('<br>Please check your end date again.');
+            removeHighlight('#dp1');
+            $('#contentarea').append('<div class="warning">Please check your end date again.</div>');
+            setHighlight('#dp2');
         } else {
-            //$(startDate).css('color', 'red');
-            $('#contentarea').append('<br>Please check your start date again. Must be older than end date.');
+            removeHighlight('#dp2');
+            $('#contentarea').append('<div class="warning">Please check your start date again. Must be older than end date.</div>');
+            setHighlight('#dp1');
         }
-        // TODO Add red highlight to inputs
+    }
+    
+    var setHighlight = function(element) {
+        $(element).focus();
+        $(element).css('outline-color', 'red');
+    }
+    
+    var removeHighlight = function(element) {
+        $(element).css('outline-color', 'transparent');
     }
     
 });
