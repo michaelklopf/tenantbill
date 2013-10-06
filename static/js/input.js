@@ -13,6 +13,7 @@ $(document).ready(function() {
         if (areAllFieldsOk()) {
             turnFieldsToNormal();
             var data = createObject();
+            postData(data);
         } else {
             return;
         }
@@ -38,6 +39,21 @@ $(document).ready(function() {
             data.noCost = $('#noCost').val();
         }
         return data;
+    }
+    
+    var postData = function(data) {
+        var messageContent = JSON.stringify(data);
+        $.ajax({
+          url:"engage",
+          type:"POST",
+          data:messageContent,
+          contentType:"application/json; charset=utf-8",
+          dataType:"json",
+          success: function(response){
+            $('#contentarea').append("It worked.");
+            console.log(response);
+          }
+        });
     }
     
     var turnFieldsToNormal = function() {
@@ -73,7 +89,8 @@ $(document).ready(function() {
             return true;
         } else if (getMonthOfDate(startDate) > getMonthOfDate(endDate)) {
             return true;
-        } else if (getDayOfDate(startDate) > getDayOfDate(endDate)) {
+        } else if (getMonthOfDate(startDate) == getMonthOfDate(endDate) &&
+                getDayOfDate(startDate) > getDayOfDate(endDate)) {
             return true;
         } else {
             return false;

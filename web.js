@@ -7,6 +7,7 @@ var fs = require('fs');
 var app = express();
 
 app.use(express.static(__dirname + '/static'));
+app.use(express.bodyParser());
 
 app.get('/', function(req, res) {
     var data = fs.readFileSync('index.html').toString();
@@ -22,6 +23,13 @@ app.get('/', function(req, res) {
         }
      });
     */
+});
+
+app.post('/engage', function(req, res) {
+    //sys.put('Content');
+    console.log(req.body.date1);
+    console.log(req.body.date2);
+    res.send(200, JSON.stringify({"Answer":"Request Received."}));
 });
 
 var port = 3000;
