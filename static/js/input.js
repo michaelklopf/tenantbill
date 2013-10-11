@@ -97,6 +97,29 @@ $(document).ready(function() {
         }
     }
     
+    var isTimeGapLessThanAYear = function(startDate, endDate) {
+        var start = Date.parse(transformDate(startDate));
+        var end  = Date.parse(transformDate(endDate));
+        var milliseconds_per_year = (60*60*24*1000*365);
+        var timegap = start-end;
+        var partialYear = Math.round(timegap/milliseconds_per_year*365);
+        console.log(startDate + " " + start);
+        if (partialYear < 365) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    
+    var transformDate = function(date) {
+        var day = getDayOfDate(date);
+        var month = getMonthOfDate(date);
+        var year = getYearOfDate(date);
+        var result = '\'' + year + '-' + month + '-' + day +
+            'T00:00:00Z\'';
+        return result;
+    }
+    
     var areAllFieldsOk = function() {
         if(!isDateOk($('#dp1').val())) {
             alertMessage('#dp1', '');
@@ -110,6 +133,10 @@ $(document).ready(function() {
             alertMessage('#dp1', '#dp2');
             return false;
         }
+        if (isTimeGapLessThanAYear($('#dp1').val(), $('#dp2').val())) {
+            alertMessage('','');
+            return false;
+        }
         return true;
     }
     
@@ -120,6 +147,12 @@ $(document).ready(function() {
         } else if (startDate === '') {
             removeHighlight('#dp1');
             $('#contentarea').append('<div class="warning">Please check your end date again.</div>');
+            setHighlight('#dp2');
+        } else if (startDate == '' && endDate == '') {
+            removeHighlight('#dp1');
+            removeHighlight('#dp2');
+            $('#contentarea').append('<div class="warning">Please check your dates again. Must not be further apart than a year.</div>');
+            setHighlight('#dp1');
             setHighlight('#dp2');
         } else {
             removeHighlight('#dp2');
