@@ -59,8 +59,8 @@ var isDateOk = function(date) {
 var computeBill = function(data) {
     var result = new Object();
     // change date format and parse date to milliseconds
-    var date1 = Date.parse(transformDate(data.date1));
-    var date2 = Date.parse(transformDate(data.date2));
+    var date1 = getDateInMs(data.date1);
+    var date2 = getDateInMs(data.date2);
     var timegap = date2-date1;
     var partialYear = Math.round(timegap/milliseconds_per_year*365);
     var finalCosts = data.totalCost-data.noCost;
@@ -69,13 +69,12 @@ var computeBill = function(data) {
     return result;
 }
 
-var transformDate = function(date) {
+var getDateInMs = function(date) {
     var day = getDayOfDate(date);
     var month = getMonthOfDate(date);
     var year = getYearOfDate(date);
-    var result = '\'' + year + '-' + month + '-' + day +
-        'T00:00:00Z\'';
-    return result;
+    var dateObj = new Date(year, month-1, day);
+    return Date.parse(dateObj);
 }
 
 var getYearOfDate = function(date) {
