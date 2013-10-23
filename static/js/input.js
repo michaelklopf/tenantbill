@@ -26,28 +26,39 @@ $(document).ready(function() {
     });
     
     $('#check1').change(function() {
-        switchDpOnOff('#dp1', boxIsChecked1);
+        var year = '';
+        if (boxIsChecked2.isChecked) {
+            var date = $('#dp2').val();
+            year = parseInt(getYearOfDate(date)) - 1;
+        }
+        switchDpOnOff('#dp1', boxIsChecked1, year);
         /*
-        console.log($('#dp1').data('datepicker').getDate());
-        var newDate = new Date('2012-08-08');
-        console.log($('#dp1').data('datepicker').setDate(newDate));
-        console.log($('#dp1').data('datepicker').getDate());
+            console.log($('#dp1').data('datepicker').setDate(newDate));
         */
     });
     
     $('#check2').change(function() {
-        switchDpOnOff('#dp2', boxIsChecked2);
-    })
+        var year = '';
+        if (boxIsChecked1.isChecked) {
+            var date = $('#dp1').val();
+            year = parseInt(getYearOfDate(date)) + 1;
+        }
+        switchDpOnOff('#dp2', boxIsChecked2, year);
+    });
     
-    var switchDpOnOff = function(datePickerElement, boxIsChecked) {
+    var switchDpOnOff = function(datePickerElement, boxIsChecked, year) {
         if (boxIsChecked.isChecked) {
             $(datePickerElement).datepicker({
                 format: 'dd.mm.yyyy'
             });
             boxIsChecked.isChecked = false;
         } else {
-            var date = $(datePickerElement).data('datepicker').getDate();
-            setFixedDate(datePickerElement, date.getFullYear());
+            if (year !== '') {
+                setFixedDate(datePickerElement, year);
+            } else {
+                var date = $(datePickerElement).data('datepicker').getDate();
+                setFixedDate(datePickerElement, date.getFullYear());
+            }
             $(datePickerElement).datepicker('remove');
             boxIsChecked.isChecked = true;
         }
