@@ -1,3 +1,7 @@
+// JS code
+var boxIsChecked1 = { isChecked : false };
+var boxIsChecked2 = { isChecked : false };
+
 // jQuery code
 $(document).ready(function() {
     $('#dp1').datepicker({
@@ -7,6 +11,8 @@ $(document).ready(function() {
     $('#dp2').datepicker({
       format: 'dd.mm.yyyy'
     });
+    
+    $('#check1').prop('checked', '');
     
     $('#sendbutton').click(function() {
         turnFieldsToNormal();
@@ -18,6 +24,39 @@ $(document).ready(function() {
             return;
         }
     });
+    
+    $('#check1').change(function() {
+        switchDpOnOff('#dp1', boxIsChecked1);
+        /*
+        console.log($('#dp1').data('datepicker').getDate());
+        var newDate = new Date('2012-08-08');
+        console.log($('#dp1').data('datepicker').setDate(newDate));
+        console.log($('#dp1').data('datepicker').getDate());
+        */
+    });
+    
+    $('#check2').change(function() {
+        switchDpOnOff('#dp2', boxIsChecked2);
+    })
+    
+    var switchDpOnOff = function(datePickerElement, boxIsChecked) {
+        if (boxIsChecked.isChecked) {
+            $(datePickerElement).datepicker({
+                format: 'dd.mm.yyyy'
+            });
+            boxIsChecked.isChecked = false;
+        } else {
+            var date = $(datePickerElement).data('datepicker').getDate();
+            setFixedDate(datePickerElement, date.getFullYear());
+            $(datePickerElement).datepicker('remove');
+            boxIsChecked.isChecked = true;
+        }
+    }
+    
+    var setFixedDate = function(element, year) {
+        var newDate = new Date(year, 00, 01);
+        $(element).data('datepicker').setDate(newDate);
+    }
     
     var createObject = function() {
         var data = new Object();
@@ -103,7 +142,6 @@ $(document).ready(function() {
         var milliseconds_per_year = (60*60*24*1000*365);
         var timegap = end-start;
         var partialYear = Math.round(timegap/milliseconds_per_year*365);
-        console.log("timegap " + timegap + " and partial Year " + partialYear);
         if (partialYear <= 365) {
             return true;
         } else {
