@@ -26,25 +26,31 @@ $(document).ready(function() {
     });
     
     $('#check1').change(function() {
+        var date = $('#dp2').val();
         var year = '';
-        if (boxIsChecked2.isChecked) {
-            var date = $('#dp2').val();
+        if (date === '') {
+            year = getYearOfPicker('#dp2');
+        } else {
             year = parseInt(getYearOfDate(date)) - 1;
         }
         switchDpOnOff('#dp1', boxIsChecked1, year);
-        /*
-            console.log($('#dp1').data('datepicker').setDate(newDate));
-        */
     });
     
     $('#check2').change(function() {
+        var date = $('#dp1').val();
         var year = '';
-        if (boxIsChecked1.isChecked) {
-            var date = $('#dp1').val();
+        if (date === '') {
+            year = getYearOfPicker('#dp2');
+        } else {
             year = parseInt(getYearOfDate(date)) + 1;
         }
         switchDpOnOff('#dp2', boxIsChecked2, year);
     });
+    
+    var getYearOfPicker = function(datePickerElement) {
+        var date = $(datePickerElement).data('datepicker').getDate();
+        return date.getFullYear();
+    }
     
     var switchDpOnOff = function(datePickerElement, boxIsChecked, year) {
         if (boxIsChecked.isChecked) {
@@ -53,12 +59,7 @@ $(document).ready(function() {
             });
             boxIsChecked.isChecked = false;
         } else {
-            if (year !== '') {
-                setFixedDate(datePickerElement, year);
-            } else {
-                var date = $(datePickerElement).data('datepicker').getDate();
-                setFixedDate(datePickerElement, date.getFullYear());
-            }
+            setFixedDate(datePickerElement, year);
             $(datePickerElement).datepicker('remove');
             boxIsChecked.isChecked = true;
         }
@@ -117,6 +118,44 @@ $(document).ready(function() {
         return regex.test(date);    
     }
     
+    var isNewYear = function(date) {
+        var regex = /^01\.01\.\d{4}$/;
+        return regex.test(date);    
+    }
+    
+    var isStartDateBehindEndDate = function(startDate, endDate) {
+        if (getYearOfDate(startDate) < getYearOfDate(endDate)) {
+            return false;
+        } else if (getYearOfDate(startDate) > getYearOfDate(endDate)) {
+            return true;
+        } else {
+            if (getMonthOfDate(startDate) > getMonthOfDate(endDate)) {
+                return true;
+            } else if (getMonthOfDate(startDate) < getMonthOfDate(endDate)) {
+                return false;
+            } else {
+                if (getDayOfDate(startDate) > getDayOfDate(endDate)) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        }
+    }
+    
+    var isTimeGapLessThanAYear = function(startDate, endDate) {
+        var start = getDateInMs(startDate);
+        var end  = getDateInMs(endDate);
+        var milliseconds_per_year = (60*60*24*1000*365);
+        var timegap = end-start;
+        var partialYear = Math.round(timegap/milliseconds_per_year*365);
+        if (partialYear <= 365) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    
     var getYearOfDate = function(date) {
         var regex = /\d{4}$/;
         return date.match(regex)[0];
@@ -134,32 +173,6 @@ $(document).ready(function() {
         return date.match(regex)[0];
     }
     
-    var isStartDateBehindEndDate = function(startDate, endDate) {
-        if (getYearOfDate(startDate) > getYearOfDate(endDate)) {
-            return true;
-        } else if (getMonthOfDate(startDate) > getMonthOfDate(endDate)) {
-            return true;
-        } else if (getMonthOfDate(startDate) == getMonthOfDate(endDate) &&
-                getDayOfDate(startDate) > getDayOfDate(endDate)) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-    
-    var isTimeGapLessThanAYear = function(startDate, endDate) {
-        var start = getDateInMs(startDate);
-        var end  = getDateInMs(endDate);
-        var milliseconds_per_year = (60*60*24*1000*365);
-        var timegap = end-start;
-        var partialYear = Math.round(timegap/milliseconds_per_year*365);
-        if (partialYear <= 365) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-    
     var getDateInMs = function(date) {
         var day = getDayOfDate(date);
         var month = getMonthOfDate(date);
@@ -167,17 +180,6 @@ $(document).ready(function() {
         var dateObj = new Date(year, month-1, day);
         return Date.parse(dateObj);
     }
-    
-    /*
-    var transformDate = function(date) {
-        var day = getDayOfDate(date);
-        var month = getMonthOfDate(date);
-        var year = getYearOfDate(date);
-        var result = '\'' + year + '-' + month + '-' + day +
-            'T00:00:00Z\'';
-        return result;
-    }
-    */
     
     var areAllFieldsOk = function() {
         if(!isDateOk($('#dp1').val())) {
@@ -187,6 +189,18 @@ $(document).ready(function() {
         if (!isDateOk($('#dp2').val())) {
             alertMessage('', '#dp2');
             return false;
+        }
+        if (boxIsChecked1.isChecked) {
+            if (!isNewYear($('#dp1').val())) {
+                alertMessage('#dp1', '');
+                return false;
+            }
+        }
+        if (boxIsChecked2.isChecked) {
+            if (!isNewYear($('#dp2').val())) {
+                alertMessage('', '#dp2');
+                return false;
+            }
         }
         if (!isTimeGapLessThanAYear($('#dp1').val(), $('#dp2').val())) {
             alertMessage('','');
@@ -234,3 +248,27 @@ $(document).ready(function() {
     }
     
 });
+
+//Reminder
+
+/*
+    console.log($('#dp1').data('datepicker').setDate(newDate));
+    var date = $(datePickerElement).data('datepicker').getDate();
+    setFixedDate(datePickerElement, date.getFullYear());
+
+    $(allcheckboxes).on(....
+    function handleClick(cb) {
+      display("Clicked, new value = " + cb.checked);
+    }
+*/
+    
+    /*
+    var transformDate = function(date) {
+        var day = getDayOfDate(date);
+        var month = getMonthOfDate(date);
+        var year = getYearOfDate(date);
+        var result = '\'' + year + '-' + month + '-' + day +
+            'T00:00:00Z\'';
+        return result;
+    }
+    */
