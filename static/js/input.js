@@ -1,6 +1,7 @@
 // JS code
 var boxIsChecked1 = { isChecked : false };
 var boxIsChecked2 = { isChecked : false };
+var daysInYear = 365;
 
 // jQuery code
 $(document).ready(function() {
@@ -29,7 +30,7 @@ $(document).ready(function() {
         var date = $('#dp2').val();
         var year = '';
         if (date === '') {
-            year = getYearOfPicker('#dp2');
+            year = getYearOfPicker('#dp1');
         } else {
             year = parseInt(getYearOfDate(date)) - 1;
         }
@@ -74,6 +75,16 @@ $(document).ready(function() {
         var data = new Object();
         data.date1 = $('#dp1').val();
         data.date2 = $('#dp2').val();
+        if (boxIsChecked1.isChecked) {
+            data.date1NewYear = true;
+        } else {
+            data.date1NewYear = false;
+        }
+        if (boxIsChecked2.isChecked) {
+            data.date2NewYear = true;
+        } else {
+            data.date2NewYear = false;
+        }
         if ($('#totalCost').val() === '') {
             data.totalCost = 0;
         } else {
@@ -102,7 +113,12 @@ $(document).ready(function() {
           dataType:"json",
           success: function(response){
             $('#contentarea').append("It worked.");
-            console.log(response);
+            console.log(response.partialYear);
+            console.log(response.finalCosts);
+            console.log(response.tenantCosts);
+            console.log(response.remainingCosts);
+            console.log(response.partialPaymentsOfTenant);
+            console.log(response.remainingDebt);
           }
         });
     }
@@ -146,10 +162,26 @@ $(document).ready(function() {
     var isTimeGapLessThanAYear = function(startDate, endDate) {
         var start = getDateInMs(startDate);
         var end  = getDateInMs(endDate);
-        var milliseconds_per_year = (60*60*24*1000*365);
+        var milliseconds_per_year = (60*60*24*1000*daysInYear);
         var timegap = end-start;
-        var partialYear = Math.round(timegap/milliseconds_per_year*365);
-        if (partialYear <= 365) {
+        var partialYear = Math.round(timegap/milliseconds_per_year*daysInYear);
+        var numberOfDaysInYear = 0;
+        if (isLeapYear(startDate)) {
+            numberOfDaysInYear = 366;
+        } else {
+            numberOfDaysInYear = daysInYear;
+        }
+        if (partialYear <= numberOfDaysInYear) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    
+    var areYearsDifferent = function(startDate, endDate) {
+        var startYear = getYearOfDate(startDate);
+        var endYear = getYearOfDate(endDate);
+        if (startYear === endYear) {
             return true;
         } else {
             return false;
@@ -181,45 +213,64 @@ $(document).ready(function() {
         return Date.parse(dateObj);
     }
     
+    var isLeapYear = function(date) {
+        var year = getYearOfDate(date);
+        if (year % 400 === 0) {
+            return true;
+        } else if (year % 100 === 0) {
+            return false;
+        } else if (year % 4 === 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    
     var areAllFieldsOk = function() {
         if(!isDateOk($('#dp1').val())) {
-            alertMessage('#dp1', '');
+            alertMessage('#dp1', '', '');
             return false;
         }
         if (!isDateOk($('#dp2').val())) {
-            alertMessage('', '#dp2');
+            alertMessage('', '#dp2', '');
             return false;
         }
         if (boxIsChecked1.isChecked) {
             if (!isNewYear($('#dp1').val())) {
-                alertMessage('#dp1', '');
+                alertMessage('#dp1', '', 'Please enter 01.01.* for valid date.');
                 return false;
             }
         }
         if (boxIsChecked2.isChecked) {
             if (!isNewYear($('#dp2').val())) {
-                alertMessage('', '#dp2');
+                alertMessage('', '#dp2', 'Please enter 01.01.* for valid date.');
+                return false;
+            }
+        }
+        if (!areYearsDifferent($('#dp1').val(), $('#dp2').val())) {
+            if (!boxIsChecked1.isChecked && !boxIsChecked2.isChecked) {
+                alertMessage('#dp1', '', 'Dates need to be in the same year.');
                 return false;
             }
         }
         if (!isTimeGapLessThanAYear($('#dp1').val(), $('#dp2').val())) {
-            alertMessage('','');
+            alertMessage('','', '');
             return false;
         }
         if (isStartDateBehindEndDate($('#dp1').val(), $('#dp2').val())) {
-            alertMessage('#dp1', '#dp2');
+            alertMessage('#dp1', '#dp2','');
             return false;
         }
         return true;
     }
     
-    var alertMessage = function(startDate, endDate) {
+    var alertMessage = function(startDate, endDate, message) {
         if (startDate !== '' && endDate === '') {
-            $('#contentarea').append('<div class="warning">Please check your start date again.</div>');
+            $('#contentarea').append('<div class="warning">Please check your start date again. ' + message + '</div>');
             setHighlightWithFocus('#dp1');
         } else if (startDate === '' && endDate !== '') {
             removeHighlight('#dp1');
-            $('#contentarea').append('<div class="warning">Please check your end date again.</div>');
+            $('#contentarea').append('<div class="warning">Please check your end date again. ' + message + '</div>');
             setHighlightWithFocus('#dp2');
         } else if (startDate == '' && endDate == '') {
             removeHighlight('#dp1');
