@@ -1,6 +1,6 @@
 /* My own CSS */
 #sendbutton {
-    width:80px;
+    width:120px;
     padding-top:10px;
 }
 
@@ -20,6 +20,10 @@
     border:2px solid red;
     padding:5px;
     text-align:center;
+}
+
+.result {
+    margin-left:10px;
 }
 
 /* Footer example CSS following here */

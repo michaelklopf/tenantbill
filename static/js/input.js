@@ -112,15 +112,28 @@ $(document).ready(function() {
           contentType:"application/json; charset=utf-8",
           dataType:"json",
           success: function(response){
-            $('#contentarea').append("It worked.");
-            console.log(response.partialYear);
-            console.log(response.finalCosts);
-            console.log(response.tenantCosts);
-            console.log(response.remainingCosts);
-            console.log(response.partialPaymentsOfTenant);
-            console.log(response.remainingDebt);
+            $('#contentarea').append(getResultText(response));
           }
         });
+    }
+    
+    var getResultBar = function(result) {
+        var barText = '<div class="progress">';
+    }
+    
+    var getResultText = function(result) {
+        var text = '<p class="result">The tenant lived <strong>' + result.partialYear + '</strong> days in the property.</p>';
+        text = text + '<p class="result">The billable costs are <strong>' + result.finalCosts.toFixed(2) + '&euro;</strong>.</p>';
+        if (result.remainingCosts > 0) {
+            text = text + '<p class="result">The share is <strong>' + result.remainingCosts.toFixed(2) + '&euro;</strong> for the landlord.</p>';
+        }
+        text = text + '<p class="result">The tenant already paid <strong>' + result.partialPaymentsOfTenant.toFixed(2) + '&euro;</strong> of <strong>' + result.tenantCosts.toFixed(2) + '&euro;</strong>.</p>';
+        text = text + '<p class="result">This leads to a remaining debt of <strong>' + result.remainingDebt.toFixed(2) + '&euro;</strong> the tenant has to pay back.</p>';
+        return text;
+    }
+    
+    var precise_round = function(num,decimals){
+        return Math.round(num*Math.pow(10,decimals))/Math.pow(10,decimals);
     }
     
     var turnFieldsToNormal = function() {

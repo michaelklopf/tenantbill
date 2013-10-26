@@ -39,6 +39,10 @@
           <div class="page-header">
             <h1>Welcome to the tenant bill site.</h1>
           </div>
+          <p class="lead">Introduction</p>
+          <p>With this application you can set a timeframe in between a year to compute the remaining costs a tenant has to pay after the heating bill has been evaluated.</p>
+          <p>It allows to set a date in between a year, to accomodate the fact a tenant has moved in the property during the year.</p>
+          <p>Enter the total costs, the amount of pre-payments the tenant did, and if necessary add the costs you cannot hand down to the tenant.</p>
           <p class="lead">Give your information here:</p>
           <p>
             <div id="inputarea" class="row">
@@ -63,12 +67,12 @@
                 <input type="number" id="prePay" placeholder="1500" min="0"></input>&nbsp;in &euro;
               </div>
               <div class="col-md-4">
-                <strong>Costs that cannot be handed down to tenant:</strong>
+                <strong>Costs which cannot be handed down to tenant:</strong>
                 <br>
                 <input type="number" id="noCost" placeholder="50" min="0"></input>&nbsp;in &euro;
               </div>  
             </div>
-            <div id="sendbutton"><button class="btn btn-lg btn-primary btn-block" type="submit">Engage</button></div>
+            <div id="sendbutton"><button class="btn btn-lg btn-primary btn-block" type="submit">Process input</button></div>
           </p>
           <p class="lead">The results:</p>
           <div id="contentarea"></div>
